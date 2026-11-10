@@ -89,7 +89,7 @@ AutoValue-AI/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/AutoValue-AI.git
+git clone https://github.com/Soul0418/AutoValue-AI.git
 cd AutoValue-AI
 ```
 
@@ -138,6 +138,5 @@ The application will open in your browser.
 
 **Saksham Kedare**
 
-GitHub: [Add your GitHub profile link]
-
+GitHub: https://github.com/Soul0418
 Portfolio: https://portfolio-website-six-eta-11.vercel.app/
