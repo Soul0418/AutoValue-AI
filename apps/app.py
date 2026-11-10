@@ -49,11 +49,6 @@ except Exception as e:
 
 
 # --------------------------------
-# HEADER
-# --------------------------------
-
-
-# --------------------------------
 # CUSTOM CSS
 # --------------------------------
 
@@ -127,23 +122,25 @@ hr {
 
 
 # --------------------------------
-# SIDEBAR
+# SIDEBAR NAVIGATION
 # --------------------------------
 
 with st.sidebar:
 
-    st.markdown("# AUTO<span style='color:#8AB4FF'>VALUE</span>",
-                unsafe_allow_html=True)
+    st.markdown(
+        "# AUTO<span style='color:#8AB4FF'>VALUE</span>",
+        unsafe_allow_html=True
+    )
 
     st.caption("INTELLIGENT VEHICLE VALUATION")
 
     st.divider()
 
     page = st.radio(
-    "NAVIGATION",
-    ["Dashboard","Price Prediction", "About Model"],
-    key="navigation"
-)
+        "NAVIGATION",
+        ["Dashboard", "Price Prediction", "About Model"],
+        key="navigation"
+    )
 
     st.divider()
 
@@ -157,21 +154,188 @@ with st.sidebar:
     st.caption("AUTO VALUE AI · 2026")
 
 
-
 # --------------------------------
-# MAIN HEADER
-# --------------------------------
-
-
-# --------------------------------
-# MAIN HEADER
+# DASHBOARD PAGE
 # --------------------------------
 
-if page == "Price Prediction":
-    submitted = st.form_submit_button(
-    "Predict Car Price",
-    use_container_width=True
-)
+if page == "Dashboard":
+
+    st.caption("OVERVIEW")
+
+    st.title("Welcome to AutoValue AI")
+
+    st.markdown(
+        "Your intelligent workspace for estimating "
+        "used vehicle resale values."
+    )
+
+    st.divider()
+
+    # Key metrics
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        with st.container(border=True):
+            st.caption("DATASET RECORDS")
+            st.metric("Total Vehicles", "10,000")
+
+    with col2:
+        with st.container(border=True):
+            st.caption("MODEL PERFORMANCE")
+            st.metric("Test R² Score", "87.66%")
+
+    with col3:
+        with st.container(border=True):
+            st.caption("AVERAGE PREDICTION ERROR")
+            st.metric("Mean Absolute Error", "$790.80")
+
+    st.divider()
+
+    # Project overview
+    st.subheader("Project Overview")
+
+    st.write(
+        "AutoValue AI uses a trained Support Vector "
+        "Regression model to estimate used car prices "
+        "based on vehicle specifications and condition."
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        with st.container(border=True):
+
+            st.markdown("### Price Prediction")
+
+            st.write(
+                "Enter vehicle details and generate "
+                "an estimated resale price."
+            )
+
+            st.button(
+                "Go to Price Prediction",
+                key="dashboard_prediction",
+                use_container_width=True,
+                on_click=lambda: st.session_state.update(
+                    {"navigation": "Price Prediction"}
+                )
+            )
+
+    with col2:
+        with st.container(border=True):
+
+            st.markdown("### Model Information")
+
+            st.write(
+                "Explore the algorithm, dataset, "
+                "evaluation metrics and model details."
+            )
+
+            st.button(
+                "Explore Model",
+                key="dashboard_model",
+                use_container_width=True,
+                on_click=lambda: st.session_state.update(
+                    {"navigation": "About Model"}
+                )
+            )
+
+    st.divider()
+
+    st.subheader("How It Works")
+
+    st.markdown("""
+    1. **Input:** Enter the vehicle's specifications.
+    2. **Preprocessing:** Encode categorical features and scale numerical features.
+    3. **Prediction:** The trained SVR model estimates the vehicle price.
+    4. **Result:** View the estimated valuation and prediction history.
+    """)
+
+    st.info(
+        "The model was evaluated on a held-out test dataset. "
+        "Its predictions are estimates, not guaranteed market prices."
+    )
+
+    st.stop()
+
+
+# --------------------------------
+# ABOUT MODEL PAGE
+# --------------------------------
+
+if page == "About Model":
+
+    st.title("About AutoValue AI")
+
+    st.markdown(
+        "Understand how our machine learning model "
+        "estimates used car prices."
+    )
+
+    st.divider()
+
+    st.subheader("Model Overview")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("Algorithm", "SVR")
+
+    with col2:
+        st.metric("R² Score", "87.66%")
+
+    with col3:
+        st.metric("Dataset Size", "10,000")
+
+    st.divider()
+
+    st.subheader("Model Performance")
+
+    st.markdown("""
+    | Evaluation Metric | Result |
+    |---|---:|
+    | R² Score | 0.8766 |
+    | Mean Absolute Error | $790.80 |
+    | Root Mean Squared Error | $990.78 |
+    """)
+
+    st.subheader("Dataset Information")
+
+    st.write("""
+    The model was trained using a used-car dataset
+    containing 10,000 records and 11 input features.
+
+    Features include:
+    - Manufacturing year
+    - Mileage
+    - Engine capacity
+    - Fuel type
+    - Brand
+    - Transmission
+    - Previous owners
+    - Service history
+    - Accident history
+    - Insurance validity
+    - Car colour
+    """)
+
+    st.warning(
+        "The dataset contains records from 1995 to 2023. "
+        "Predictions outside this range may be less reliable."
+    )
+
+    st.caption(
+        "AutoValue AI | Machine Learning Project"
+    )
+
+    st.stop()
+
+
+# --------------------------------
+# PRICE PREDICTION PAGE
+# --------------------------------
+
+submitted = False
 
 st.title("AutoValue AI")
 
@@ -187,11 +351,14 @@ st.divider()
 # --------------------------------
 
 st.markdown("## Vehicle Information")
-st.caption("Enter the details of your vehicle to estimate its resale value.")
+
+st.caption(
+    "Enter the details of your vehicle to estimate its resale value."
+)
 
 with st.form("car_prediction_form"):
 
-    # Vehicle specifications
+    # General details
     st.markdown("### General Details")
 
     col1, col2, col3 = st.columns(3)
@@ -293,6 +460,7 @@ with st.form("car_prediction_form"):
 
     st.divider()
 
+    # Submit button must be INSIDE the form
     submitted = st.form_submit_button(
         "Predict Car Price",
         use_container_width=True
@@ -300,182 +468,12 @@ with st.form("car_prediction_form"):
 
 
 # --------------------------------
-# ABOUT MODEL PAGE
-# --------------------------------
-
-# --------------------------------
-# DASHBOARD PAGE
-# --------------------------------
-
-if page == "Dashboard":
-
-    st.caption("OVERVIEW")
-
-    st.title("Welcome to AutoValue AI")
-
-    st.markdown(
-        "Your intelligent workspace for estimating "
-        "used vehicle resale values."
-    )
-
-    st.divider()
-
-    # Key metrics
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        with st.container(border=True):
-            st.caption("DATASET RECORDS")
-            st.metric("Total Vehicles", "10,000")
-
-    with col2:
-        with st.container(border=True):
-            st.caption("MODEL PERFORMANCE")
-            st.metric("Test R² Score", "87.66%")
-
-    with col3:
-        with st.container(border=True):
-            st.caption("AVERAGE PREDICTION ERROR")
-            st.metric("Mean Absolute Error", "$790.80")
-
-    st.divider()
-
-    # Project overview
-    st.subheader("Project Overview")
-
-    st.write(
-        "AutoValue AI uses a trained Support Vector "
-        "Regression model to estimate used car prices "
-        "based on vehicle specifications and condition."
-    )
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        with st.container(border=True):
-            st.markdown("### Price Prediction")
-            st.write(
-                "Enter vehicle details and generate "
-                "an estimated resale price."
-            )
-            st.button(
-                "Go to Price Prediction",
-                key="dashboard_prediction",
-                use_container_width=True,
-                on_click=lambda: st.session_state.update(
-                    {"navigation": "Price Prediction"}
-                )
-            )
-
-    with col2:
-        with st.container(border=True):
-            st.markdown("### Model Information")
-            st.write(
-                "Explore the algorithm, dataset, "
-                "evaluation metrics and model details."
-            )
-            st.button(
-                "Explore Model",
-                key="dashboard_model",
-                use_container_width=True,
-                on_click=lambda: st.session_state.update(
-                    {"navigation": "About Model"}
-                )
-            )
-
-    st.divider()
-
-    st.subheader("How It Works")
-
-    st.markdown("""
-    1. **Input:** Enter the vehicle's specifications.
-    2. **Preprocessing:** Encode categorical features and scale numerical features.
-    3. **Prediction:** The trained SVR model estimates the vehicle price.
-    4. **Result:** View the estimated valuation and prediction history.
-    """)
-
-    st.info(
-        "The model was evaluated on a held-out test dataset. "
-        "Its predictions are estimates, not guaranteed market prices."
-    )
-
-    st.stop()
-
-
-if page == "About Model":
-
-    st.title("About AutoValue AI")
-
-    st.markdown(
-        "Understand how our machine learning model "
-        "estimates used car prices."
-    )
-
-    st.divider()
-
-    st.subheader("Model Overview")
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric("Algorithm", "SVR")
-
-    with col2:
-        st.metric("R² Score", "87.66%")
-
-    with col3:
-        st.metric("Dataset Size", "10,000")
-
-    st.divider()
-
-    st.subheader("Model Performance")
-
-    st.markdown("""
-    | Evaluation Metric | Result |
-    |---|---:|
-    | R² Score | 0.8766 |
-    | Mean Absolute Error | $790.80 |
-    | Root Mean Squared Error | $990.78 |
-    """)
-
-    st.subheader("Dataset Information")
-
-    st.write("""
-    The model was trained using a used-car dataset
-    containing 10,000 records and 11 input features.
-
-    Features include:
-    - Manufacturing year
-    - Mileage
-    - Engine capacity
-    - Fuel type
-    - Brand
-    - Transmission
-    - Previous owners
-    - Service history
-    - Accident history
-    - Insurance validity
-    - Car colour
-    """)
-
-    st.warning(
-        "The dataset contains records from 1995 to 2023. "
-        "Predictions outside this range may be less reliable."
-    )
-
-    st.caption(
-        "AutoValue AI | Machine Learning Project"
-    )
-
-    st.stop()
-    
-
-# --------------------------------
-# PRICE PREDICTION
+# PRICE PREDICTION PROCESSING
 # --------------------------------
 
 if submitted:
 
+    # Create input DataFrame
     new_car = pd.DataFrame({
         "make_year": [make_year],
         "mileage_kmpl": [mileage_kmpl],
@@ -489,9 +487,10 @@ if submitted:
         "accidents_reported": [accidents_reported],
         "insurance_valid": [insurance_valid]
     })
-if submitted:
 
+    # Warn about extrapolation beyond training years
     if make_year > 2023:
+
         st.warning(
             "This vehicle's manufacturing year is outside "
             "the training dataset (1995–2023). "
@@ -528,10 +527,10 @@ if submitted:
 
     processed_data = processed_data[feature_columns]
 
-    # Predict
+    # Generate prediction
     predicted_price = model.predict(processed_data)[0]
 
-        # Save prediction to session history
+    # Save prediction to session history
     st.session_state.prediction_history.append({
         "Date": datetime.now().strftime("%d-%m-%Y %H:%M"),
         "Brand": brand,
@@ -541,23 +540,16 @@ if submitted:
         "Predicted Price (USD)": round(predicted_price, 2)
     })
 
-    
     # --------------------------------
     # PREDICTION RESULT
     # --------------------------------
 
     st.divider()
+
     st.markdown("## Vehicle Valuation")
 
-    if make_year > 2023:
-        st.warning(
-            "This vehicle's manufacturing year is outside "
-            "the training dataset range (1995–2023). "
-            "The prediction may be less reliable."
-        )
-
-    # Price display
     with st.container(border=True):
+
         st.caption("ESTIMATED RESALE VALUE")
 
         st.markdown(
@@ -591,6 +583,7 @@ if submitted:
         "market valuation or guaranteed selling price."
     )
 
+
 # --------------------------------
 # PREDICTION HISTORY
 # --------------------------------
@@ -598,7 +591,10 @@ if submitted:
 st.divider()
 
 st.markdown("## Recent Predictions")
-st.caption("Your previous vehicle valuation results in this session.")
+
+st.caption(
+    "Your previous vehicle valuation results in this session."
+)
 
 if st.session_state.prediction_history:
 
@@ -613,9 +609,13 @@ if st.session_state.prediction_history:
     )
 
     if st.button("Clear Prediction History"):
+
         st.session_state.prediction_history = []
+
         st.rerun()
 
 else:
-    st.info("No predictions yet. Generate your first vehicle valuation!")
 
+    st.info(
+        "No predictions yet. Generate your first vehicle valuation!"
+    )
