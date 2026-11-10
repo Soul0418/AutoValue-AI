@@ -167,7 +167,11 @@ with st.sidebar:
 # MAIN HEADER
 # --------------------------------
 
-
+if page == "Price Prediction":
+    submitted = st.form_submit_button(
+    "Predict Car Price",
+    use_container_width=True
+)
 
 st.title("AutoValue AI")
 
